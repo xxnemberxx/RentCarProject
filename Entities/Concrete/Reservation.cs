@@ -7,7 +7,7 @@ namespace Entities.Concrete
     {
         public int ReservationId { get; set; }
         public DateTime PickupDate { get; set; }
-        public DateTime ReturnDate { get; set; }
+        public DateTime? ReturnDate { get; set; }
         public short VehicleId { get; set; }
         public int CustomerId { get; set; }
 

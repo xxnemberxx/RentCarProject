@@ -11,23 +11,23 @@ namespace Core.DataAccess.EntityFramework
         where TEntity : class, IDto, new()
         where TContext : DbContext, new() 
     {
-        public void Add(List<TEntity> entities)
+        public void Add(TEntity entity)
         {
             // Garbage Collecter, using bitince çalışır
             // IDisposable pattern implementation of c# 
             using (TContext context = new TContext())
             {
-                var addedEntity = context.Entry(entities); // referansını getir
+                var addedEntity = context.Entry(entity); // referansını getir
                 addedEntity.State = EntityState.Added; // ekleme işlemi olacak
                 context.SaveChanges(); // İşlemleri gerçekleştir
             }
         }
 
-        public void Delete(List<TEntity> entities)
+        public void Delete(TEntity entity)
         {
             using (TContext context = new TContext())
             {
-                var deletedEntity = context.Entry(entities); // referansını getir
+                var deletedEntity = context.Entry(entity); // referansını getir
                 deletedEntity.State = EntityState.Deleted; // Silme işlemi olacak
                 context.SaveChanges(); // İşlemleri gerçekleştir
             }
