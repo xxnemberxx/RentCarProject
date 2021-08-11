@@ -2,7 +2,7 @@
 
 namespace Entities.Concrete
 {
-    public class Model : IDto
+    public class Model : IEntity
     {
         public short ModelId { get; set; }
         public string ModelName { get; set; }

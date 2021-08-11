@@ -2,17 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Core.DataAccess
 {
-    public interface IEntityRepository<T>
-        where T : class, IDto, new()
+    // Generic Constraint - where
+    // class : referance type
+    // IEntity -> IEntity olabilir ya da implemente eden bir nesne olabilir
+    // new() : Oluşturulan, yer tutan bir nesne olabilir 
+    public interface IEntityRepository<T> where T : class, IEntity, new()
     {
         List<T> GetAll(Expression<Func<T, bool>> filter = null);
         T Get(Expression<Func<T, bool>> filter);
         void Add(T entity);
-        void Update(T entity);
+        void Update(T entityId);
         void Delete(T entity);
     }
 }

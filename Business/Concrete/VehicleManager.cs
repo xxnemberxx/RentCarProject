@@ -1,8 +1,10 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
-using Core.Utilities;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -51,6 +53,8 @@ namespace Business.Concrete
                 );
         }
 
+        [SecuredOperation("vehicle.add, admin")]
+        [ValidationAspect(typeof(VehicleValidator))]
         public IResult Add(Vehicle vehicle)
         {
             ValidationTool.Validate(new VehicleValidator(), vehicle);

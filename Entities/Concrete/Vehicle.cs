@@ -2,7 +2,7 @@
 
 namespace Entities.Concrete
 {
-    public class Vehicle : IDto
+    public class Vehicle : IEntity
     {
         public short VehicleId { get; set; }
         public string LicensePlate { get; set; }

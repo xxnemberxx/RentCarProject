@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.Utilities
+﻿namespace Core.Utilities.Results
 {
     public class Result : IResult
     {
@@ -11,7 +7,7 @@ namespace Core.Utilities
             Message = message;
         }
 
-        public Result(bool success)
+        public Result(bool success) 
         {
             Success = success;
         }

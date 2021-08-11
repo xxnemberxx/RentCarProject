@@ -15,6 +15,7 @@ namespace Business.DependencyResolvers.Autofac
         {
             // Business Layer
             builder.RegisterType<VehicleManager>().As<IVehicleService>().SingleInstance();
+            builder.RegisterType<VehicleImageManager>().As<IVehicleImageService>().SingleInstance();
             builder.RegisterType<ColorManager>().As<IColorService>().SingleInstance();
             builder.RegisterType<ReservationManager>().As<IReservationService>().SingleInstance();
             builder.RegisterType<ModelManager>().As<IModelService>().SingleInstance();
@@ -24,6 +25,7 @@ namespace Business.DependencyResolvers.Autofac
 
             // DataAccess Layer
             builder.RegisterType<EfVehicleDal>().As<IVehicleDal>().SingleInstance();
+            builder.RegisterType<EfVehicleImageDal>().As<IVehicleImageDal>().SingleInstance();
             builder.RegisterType<EfColorDal>().As<IColorDal>().SingleInstance();
             builder.RegisterType<EfReservationDal>().As<IReservationDal>().SingleInstance();
             builder.RegisterType<EfModelDal>().As<IModelDal>().SingleInstance();

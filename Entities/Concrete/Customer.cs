@@ -3,7 +3,7 @@ using System;
 
 namespace Entities.Concrete
 {
-    public class Customer : IDto
+    public class Customer : IEntity
     {
         public int CustomerId { get; set; }
         public string FirstName { get; set; }

@@ -3,7 +3,7 @@ using System;
 
 namespace Entities.Concrete
 {
-    public class Reservation : IDto
+    public class Reservation : IEntity
     {
         public int ReservationId { get; set; }
         public DateTime PickupDate { get; set; }

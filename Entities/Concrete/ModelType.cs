@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Concrete
 {
-    public class ModelType : IDto
+    public class ModelType : IEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public byte TypeId { get; set; }
