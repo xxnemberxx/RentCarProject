@@ -4,7 +4,8 @@ using Entities.Concrete;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfBrandDal : EfEntityRepositoryBase<Brand, RentCarContext>, IBrandDal
+    public class EfBrandDal : EfRepositoryBase<Brand, ProjectDbContext>, IBrandDal
     {
+        public EfBrandDal(ProjectDbContext context) :base(context) { }
     }
 }

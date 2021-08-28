@@ -6,6 +6,7 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -17,27 +18,44 @@ namespace Business.Concrete
             _customerDal = customerDal;
         }
 
-        public IResult Add(Customer customer)
+        public Task<IResult> AddAsync(Customer customer)
         {
-            _customerDal.Add(customer);
-            return new SuccessResult(Message.Added);
+            throw new NotImplementedException();
         }
 
-        public IResult Delete(Customer customer)
+        public Task<IResult> AddRangeAsync(IEnumerable<Customer> customers)
         {
-            _customerDal.Delete(customer);
-            return new SuccessResult(Message.Deleted);
+            throw new NotImplementedException();
         }
 
-        public IDataResult<List<Customer>> GetAll()
+        public Task<IDataResult<IEnumerable<Customer>>> GetAllAsync()
         {
-            return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(), Message.SelectedList);
+            throw new NotImplementedException();
+        }
+
+        public ValueTask<IDataResult<Customer>> GetByIdAsync(int customerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IResult Remove(Customer customer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IResult RemoveRange(IEnumerable<Customer> customers)
+        {
+            throw new NotImplementedException();
         }
 
         public IResult Update(Customer customer)
         {
-            _customerDal.Update(customer);
-            return new SuccessResult(Message.Updated);
+            throw new NotImplementedException();
+        }
+
+        public IResult UpdateRange(IEnumerable<Customer> customers)
+        {
+            throw new NotImplementedException();
         }
     }
 }

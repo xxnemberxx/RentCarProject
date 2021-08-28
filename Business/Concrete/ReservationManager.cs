@@ -6,6 +6,8 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+
 namespace Business.Concrete
 {
     public class ReservationManager : IReservationService
@@ -15,29 +17,44 @@ namespace Business.Concrete
         {
             _reservationDal = reservationDal;
         }
-        public IResult Add(Reservation reservation)
+        public Task<IResult> AddAsync(Reservation reservation)
         {
-            _reservationDal.Add(reservation);
-            return new SuccessResult(Message.Added);
+            throw new NotImplementedException();
         }
 
-        public IResult Delete(Reservation reservation)
+        public Task<IResult> AddRangeAsync(IEnumerable<Reservation> reservations)
         {
-            _reservationDal.Delete(reservation);
-            return new SuccessResult(Message.Deleted);
+            throw new NotImplementedException();
         }
 
-        public IDataResult<List<Reservation>> GetAll()
+        public Task<IDataResult<IEnumerable<Reservation>>> GetAllAsync()
         {
-            return new SuccessDataResult<List<Reservation>>(
-                _reservationDal.GetAll(),
-                Message.SelectedList);
+            throw new NotImplementedException();
+        }
+
+        public ValueTask<IDataResult<Reservation>> GetByIdAsync(int reservationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IResult Remove(Reservation reservation)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IResult RemoveRange(IEnumerable<Reservation> reservations)
+        {
+            throw new NotImplementedException();
         }
 
         public IResult Update(Reservation reservation)
         {
-            _reservationDal.Update(reservation);
-            return new SuccessResult(Message.Updated);
+            throw new NotImplementedException();
+        }
+
+        public IResult UpdateRange(IEnumerable<Reservation> reservations)
+        {
+            throw new NotImplementedException();
         }
     }
 }

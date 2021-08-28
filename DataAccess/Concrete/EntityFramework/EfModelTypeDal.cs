@@ -4,7 +4,8 @@ using Entities.Concrete;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfModelTypeDal : EfEntityRepositoryBase<ModelType, RentCarContext>, IModelTypeDal
+    public class EfModelTypeDal : EfRepositoryBase<ModelType, ProjectDbContext>, IModelTypeDal
     {
+        public EfModelTypeDal(ProjectDbContext context) : base(context) { }
     }
 }

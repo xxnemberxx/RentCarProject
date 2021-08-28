@@ -3,9 +3,7 @@ using Business.Abstract;
 using Business.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using DataAccess.UnitOfWork;
 
 namespace Business.DependencyResolvers.Autofac
 {
@@ -13,7 +11,7 @@ namespace Business.DependencyResolvers.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
-            // Business Layer
+
             builder.RegisterType<VehicleManager>().As<IVehicleService>().SingleInstance();
             builder.RegisterType<VehicleImageManager>().As<IVehicleImageService>().SingleInstance();
             builder.RegisterType<ColorManager>().As<IColorService>().SingleInstance();
@@ -23,7 +21,6 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<CustomerManager>().As<ICustomerService>().SingleInstance();
             builder.RegisterType<BrandManager>().As<IBrandService>().SingleInstance();
 
-            // DataAccess Layer
             builder.RegisterType<EfVehicleDal>().As<IVehicleDal>().SingleInstance();
             builder.RegisterType<EfVehicleImageDal>().As<IVehicleImageDal>().SingleInstance();
             builder.RegisterType<EfColorDal>().As<IColorDal>().SingleInstance();
@@ -32,6 +29,8 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<EfModelTypeDal>().As<IModelTypeDal>().SingleInstance();
             builder.RegisterType<EfCustomerDal>().As<ICustomerDal>().SingleInstance();
             builder.RegisterType<EfBrandDal>().As<IBrandDal>().SingleInstance();
+
+            builder.RegisterType<ProjectDbContext>().As<ProjectDbContext>().SingleInstance();
         }
     }
 }

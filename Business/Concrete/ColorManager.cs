@@ -6,6 +6,7 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -17,27 +18,44 @@ namespace Business.Concrete
             _colorDal = colorDal;
         }
 
-        public IResult Add(Color color)
+        public Task<IResult> AddAsync(Color color)
         {
-            _colorDal.Add(color);
-            return new SuccessResult(Message.Added);
+            throw new NotImplementedException();
         }
 
-        public IResult Delete(Color color)
+        public Task<IResult> AddRangeAsync(IEnumerable<Color> colors)
         {
-            _colorDal.Delete(color);
-            return new SuccessResult(Message.Deleted);
+            throw new NotImplementedException();
         }
 
-        public IDataResult<List<Color>> GetAll()
+        public Task<IDataResult<IEnumerable<Color>>> GetAllAsync()
         {
-            return new SuccessDataResult<List<Color>>(_colorDal.GetAll(), Message.SelectedList);
+            throw new NotImplementedException();
+        }
+
+        public ValueTask<IDataResult<Color>> GetByIdAsync(byte colorId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IResult Remove(Color color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IResult RemoveRange(IEnumerable<Color> colors)
+        {
+            throw new NotImplementedException();
         }
 
         public IResult Update(Color color)
         {
-            _colorDal.Update(color);
-            return new SuccessResult(Message.Updated);
+            throw new NotImplementedException();
+        }
+
+        public IResult UpdateRange(IEnumerable<Color> colors)
+        {
+            throw new NotImplementedException();
         }
     }
 }

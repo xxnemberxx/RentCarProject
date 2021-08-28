@@ -5,6 +5,7 @@ using DataAccess.Abstract;
 using Entities.Concrete;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -16,28 +17,44 @@ namespace Business.Concrete
             _brandDal = brandDal;
         }
 
-        public IResult Add(Brand brand)
+        public Task<IResult> AddAsync(Brand brand)
         {
-            _brandDal.Add(brand);
-            return new SuccessResult(Message.Added);
+            throw new NotImplementedException();
         }
 
-        public IResult Delete(Brand brand)
+        public Task<IResult> AddRangeAsync(IEnumerable<Brand> brands)
         {
-            _brandDal.Add(brand);
-            return new SuccessResult(Message.Added);
+            throw new NotImplementedException();
         }
 
-        public IDataResult<List<Brand>> GetAll()
+        public Task<IDataResult<IEnumerable<Brand>>> GetAllAsync()
         {
+            throw new NotImplementedException();
+        }
 
-            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(), Message.SelectedList);
+        public ValueTask<IDataResult<Brand>> GetByIdAsync(short brandId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IResult Remove(Brand brand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IResult RemoveRange(IEnumerable<Brand> brands)
+        {
+            throw new NotImplementedException();
         }
 
         public IResult Update(Brand brand)
         {
-            _brandDal.Add(brand);
-            return new SuccessResult(Message.Added);
+            throw new NotImplementedException();
+        }
+
+        public IResult UpdateRange(IEnumerable<Brand> brands)
+        {
+            throw new NotImplementedException();
         }
     }
 }

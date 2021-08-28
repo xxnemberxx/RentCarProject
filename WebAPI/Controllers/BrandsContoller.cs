@@ -19,9 +19,9 @@ namespace WebAPI.Controllers
             _brandService = vehicleService;
         }
         [HttpGet("getall")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var result = _brandService.GetAll();
+            var result = _brandService.GetAllAsync();
             if (result.Success)
             {
                 return Ok(result.Data);

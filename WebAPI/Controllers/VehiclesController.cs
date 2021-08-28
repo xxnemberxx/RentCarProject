@@ -19,16 +19,6 @@ namespace WebAPI.Controllers
         {
             _vehicleService = vehicleService;
         }
-        [HttpGet("getall")]
-        public IActionResult GetAll()
-        {
-            var result = _vehicleService.GetAll();
-            if(result.Success)
-            {
-                return Ok(result.Data);
-            }
-            return BadRequest(result.Message);
-        }
 
         [HttpGet("getbyid")]
         public IActionResult GetById(short id)
@@ -41,16 +31,6 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
-        [HttpPost("add")]
-        public IActionResult Add(Vehicle vehicle)
-        {
-            var result = _vehicleService.Add(vehicle);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result.Message);
-        }
         [HttpPost("update")]
         public IActionResult Update(Vehicle vehicle)
         {
@@ -64,7 +44,7 @@ namespace WebAPI.Controllers
         [HttpPost("delete")]
         public IActionResult Delete(Vehicle vehicle)
         {
-            var result = _vehicleService.Delete(vehicle);
+            var result = _vehicleService.Remove(vehicle);
             if (result.Success)
             {
                 return Ok(result);

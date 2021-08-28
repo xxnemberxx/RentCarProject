@@ -4,7 +4,8 @@ using Entities.Concrete;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfReservationDal : EfEntityRepositoryBase<Reservation, RentCarContext>, IReservationDal
+    public class EfReservationDal : EfRepositoryBase<Reservation, ProjectDbContext>, IReservationDal
     {
+        public EfReservationDal(ProjectDbContext context) : base(context) { }
     }
 }

@@ -3,12 +3,14 @@ using Business.BusinessAspect.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
-using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
+using DataAccess.UnitOfWork;
 using Entities.Concrete;
 using Entities.DTOs;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -19,59 +21,158 @@ namespace Business.Concrete
         {
             _vehicleDal = vehicleDal;
         }
-        public IDataResult<Vehicle> GetById(short vehicleId)
+
+        public IDataResult<IEnumerable<Vehicle>> GetByBetweenTwoUnitPrice(decimal min, decimal max)
         {
-            return new SuccessDataResult<Vehicle>(
-                _vehicleDal.Get(v => v.VehicleId == vehicleId),
-                Message.Selected
-                );
-        }
-        public IDataResult<List<Vehicle>> GetAll()
-        {
-            // Business Code
-            return new SuccessDataResult<List<Vehicle>>(
-                _vehicleDal.GetAll(), 
-               Message.SelectedList
-                );
+            var result = BusinessRules.Run();
+            if (result != null)
+            {
+                return new ErrorDataResult<IEnumerable<Vehicle>>(result.Message);
+            }
+
+            return new SuccessDataResult<IEnumerable<Vehicle>>
+                (_vehicleDal.Find(v => v.PricePerHr >= min && v.PricePerHr <= max), Messages.SelectedList);
         }
 
-        public IDataResult<List<Vehicle>> GetByBetweenTwoUnitPrice(decimal min, decimal max)
+        public IDataResult<IEnumerable<VehicleDetailDto>> GetVehicleDetails()
         {
-            // Business Code
-            return new SuccessDataResult<List<Vehicle>>(
-                _vehicleDal.GetAll(v => v.PricePerHr >= min && v.PricePerHr <= max), 
-                Message.SelectedList
-                );
-        }
+            var result = BusinessRules.Run();
+            if (result != null)
+            {
+                return new ErrorDataResult<IEnumerable<VehicleDetailDto>>(result.Message);
+            }
 
-        public IDataResult<List<VehicleDetailDto>> GetVehicleDetails()
-        {
-            // Business Code
-            return new SuccessDataResult<List<VehicleDetailDto>>(
-                _vehicleDal.GetVehicleDetails(), 
-                Message.SelectedList
-                );
-        }
-
-        [SecuredOperation("vehicle.add, admin")]
-        [ValidationAspect(typeof(VehicleValidator))]
-        public IResult Add(Vehicle vehicle)
-        {
-            ValidationTool.Validate(new VehicleValidator(), vehicle);
-            _vehicleDal.Add(vehicle);
-            return new SuccessResult(Message.Added);
+            return new SuccessDataResult<IEnumerable<VehicleDetailDto>>
+                (_vehicleDal.GetVehicleDetails(),Messages.SelectedList);
         }
 
         public IResult Update(Vehicle vehicle)
         {
+            var result = BusinessRules.Run();
+            if (result != null)
+            {
+                return result;
+            }
+
             _vehicleDal.Update(vehicle);
-            return new SuccessResult(Message.Updated);
+            _vehicleDal.SaveChanges();
+
+            return new SuccessResult(Messages.Updated);
         }
 
         public IResult Delete(Vehicle vehicle)
         {
-            _vehicleDal.Delete(vehicle);
-            return new SuccessResult(Message.Deleted);
+            var result = BusinessRules.Run();
+            if (result != null)
+            {
+                return result;
+            }
+
+            _vehicleDal.Remove(vehicle);
+            _vehicleDal.SaveChanges();
+
+            return new SuccessResult(Messages.Deleted);
+        }
+
+        [SecuredOperation("vehicle.add, admin")]
+        [ValidationAspect(typeof(VehicleValidator))]
+        public async Task<IResult> AddAsync(Vehicle vehicle)
+        {
+            var result = BusinessRules.Run();
+            if (result != null)
+            {
+                return result;
+            }
+
+            await _vehicleDal.AddAsync(vehicle);
+            await _vehicleDal.SaveChangesAsync();
+
+            return new SuccessResult();
+        }
+
+        public async Task<IResult> AddRangeAsync(IEnumerable<Vehicle> vehicles)
+        {
+            var result = BusinessRules.Run();
+            if (result != null)
+            {
+                return result;
+            }
+
+            await _vehicleDal.AddRangeAsync(vehicles);
+            await _vehicleDal.SaveChangesAsync();
+
+            return new SuccessResult();
+        }
+
+        public IResult UpdateRange(IEnumerable<Vehicle> vehicles)
+        {
+            var result = BusinessRules.Run();
+            if (result != null)
+            {
+                return result;
+            }
+
+            _vehicleDal.UpdateRange(vehicles);
+            _vehicleDal.SaveChanges();
+
+            return new SuccessResult();
+        }
+
+        public IResult Remove(Vehicle vehicle)
+        {
+            var result = BusinessRules.Run();
+            if (result != null)
+            {
+                return result;
+            }
+
+            _vehicleDal.Remove(vehicle);
+            _vehicleDal.SaveChanges();
+
+            return new SuccessResult();
+        }
+
+        public IResult RemoveRange(IEnumerable<Vehicle> vehicles)
+        {
+            var result = BusinessRules.Run();
+            if(result != null)
+            {
+                return result;
+            }
+
+            _vehicleDal.RemoveRange(vehicles);
+            _vehicleDal.SaveChanges();
+
+            return new SuccessResult();
+        }
+
+        public async ValueTask<IDataResult<Vehicle>> GetByIdAsync(short vehicleId)
+        {
+            var result = BusinessRules.Run();
+            if (result != null)
+            {
+                return new ErrorDataResult<Vehicle>(result.Message);
+            }
+
+            return new SuccessDataResult<Vehicle>
+                (await _vehicleDal.GetByIdAsync<short>(vehicleId));
+        }
+
+        public async Task<IDataResult<IEnumerable<Vehicle>>> GetAllAsync()
+        {
+            var result = BusinessRules.Run();
+            if (result != null)
+            {
+                return new ErrorDataResult<IEnumerable<Vehicle>>(result.Message);
+            }
+
+            return new SuccessDataResult<IEnumerable<Vehicle>>
+                (await _vehicleDal.GetAllAsync());
+        }
+
+        public IDataResult<Vehicle> GetById(short vehicleId)
+        {
+            return new SuccessDataResult<Vehicle>(_vehicleDal.GetById<short>(vehicleId));
         }
     }
 }

@@ -8,7 +8,8 @@ using System.Text;
 namespace DataAccess.Concrete.EntityFramework
 {
     public class EfVehicleImageDal 
-        : EfEntityRepositoryBase<VehicleImage, RentCarContext>, IVehicleImageDal
+        : EfRepositoryBase<VehicleImage, ProjectDbContext>, IVehicleImageDal
     {
+        public EfVehicleImageDal(ProjectDbContext context) : base(context) { }
     }
 }

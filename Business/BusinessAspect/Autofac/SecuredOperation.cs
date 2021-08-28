@@ -30,7 +30,7 @@ namespace Business.BusinessAspect.Autofac
                 }
             }
 
-            throw new System.Exception(Message.AuthorizationDenied);
+            throw new System.Exception(Messages.AuthorizationDenied);
         }
     }
 }

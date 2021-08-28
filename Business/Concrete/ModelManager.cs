@@ -4,6 +4,7 @@ using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -15,27 +16,44 @@ namespace Business.Concrete
             _modelDal = modelDal;
         }
 
-        public IResult Add(Model model)
+        public Task<IResult> AddAsync(Model model)
         {
-            _modelDal.Add(model);
-            return new SuccessResult(Message.Added);
+            throw new System.NotImplementedException();
         }
 
-        public IResult Delete(Model model)
+        public Task<IResult> AddRangeAsync(IEnumerable<Model> models)
         {
-            _modelDal.Delete(model);
-            return new SuccessResult(Message.Deleted);
+            throw new System.NotImplementedException();
         }
 
-        public IDataResult<List<Model>> GetAll()
+        public Task<IDataResult<IEnumerable<Model>>> GetAllAsync()
         {
-            return new SuccessDataResult<List<Model>>(_modelDal.GetAll(), Message.SelectedList);
+            throw new System.NotImplementedException();
+        }
+
+        public ValueTask<IDataResult<Model>> GetByIdAsync(short modelId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IResult Remove(Model model)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IResult RemoveRange(IEnumerable<Model> models)
+        {
+            throw new System.NotImplementedException();
         }
 
         public IResult Update(Model model)
         {
-            _modelDal.Update(model);
-            return new SuccessResult(Message.Updated);
+            throw new System.NotImplementedException();
+        }
+
+        public IResult UpdateRange(IEnumerable<Model> models)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

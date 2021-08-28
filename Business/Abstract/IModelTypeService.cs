@@ -1,13 +1,19 @@
 ﻿using Core.Utilities.Results;
 using Entities.Concrete;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace Business.Abstract
 {
     public interface IModelTypeService
     {
-        IResult Add(ModelType modelType);
+        Task<IResult> AddAsync(ModelType modelType);
+        Task<IResult> AddRangeAsync(IEnumerable<ModelType> modelTypes);
         IResult Update(ModelType modelType);
-        IResult Delete(ModelType modelType);
-        IDataResult<List<ModelType>> GetAll();
+        IResult UpdateRange(IEnumerable<ModelType> modelTypes);
+        IResult Remove(ModelType modelType);
+        IResult RemoveRange(IEnumerable<ModelType> modelTypes);
+        ValueTask<IDataResult<ModelType>> GetByIdAsync(byte typeId);
+        Task<IDataResult<IEnumerable<ModelType>>> GetAllAsync();
     }
 }

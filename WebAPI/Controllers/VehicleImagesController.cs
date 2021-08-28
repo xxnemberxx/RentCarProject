@@ -22,9 +22,9 @@ namespace WebAPI.Controllers
         [HttpPost("upload")]
         public IActionResult Upload([FromForm(Name = ("Image"))] IFormFile file, [FromForm] VehicleImage vehicleImage)
         {
-            var result = _vehicleImageService.Add(file, vehicleImage);
+            var result = _vehicleImageService.AddAsync(file, vehicleImage);
 
-            if (result.Success)
+            if (result.Result.Success)
             {
                 return Ok(result);
             }

@@ -4,6 +4,7 @@ using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -15,27 +16,44 @@ namespace Business.Concrete
             _modelTypeDal = modelTypeDal;
         }
 
-        public IResult Add(ModelType modelType)
+        public Task<IResult> AddAsync(ModelType modelType)
         {
-            _modelTypeDal.Add(modelType);
-            return new SuccessResult(Message.Added);
+            throw new System.NotImplementedException();
         }
 
-        public IResult Delete(ModelType modelType)
+        public Task<IResult> AddRangeAsync(IEnumerable<ModelType> modelTypes)
         {
-            _modelTypeDal.Delete(modelType);
-            return new SuccessResult(Message.Deleted);
+            throw new System.NotImplementedException();
         }
 
-        public IDataResult<List<ModelType>> GetAll()
+        public Task<IDataResult<IEnumerable<ModelType>>> GetAllAsync()
         {
-            return new SuccessDataResult<List<ModelType>>(_modelTypeDal.GetAll(), Message.SelectedList);
+            throw new System.NotImplementedException();
+        }
+
+        public ValueTask<IDataResult<ModelType>> GetByIdAsync(byte typeId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IResult Remove(ModelType modelType)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IResult RemoveRange(IEnumerable<ModelType> modelTypes)
+        {
+            throw new System.NotImplementedException();
         }
 
         public IResult Update(ModelType modelType)
         {
-            _modelTypeDal.Update(modelType);
-            return new SuccessResult(Message.Updated);
+            throw new System.NotImplementedException();
+        }
+
+        public IResult UpdateRange(IEnumerable<ModelType> modelTypes)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

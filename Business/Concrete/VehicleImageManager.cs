@@ -10,6 +10,8 @@ using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -23,7 +25,7 @@ namespace Business.Concrete
             _vehicleService = vehicleService;
         }
         [ValidationAspect(typeof(VehicleImageValidator))]
-        public IResult Add(IFormFile file, VehicleImage vehicleImage)
+        public async Task<IResult> AddAsync(IFormFile file, VehicleImage vehicleImage)
         {
             var result = BusinessRules.Run(
                 CheckIfExceedsUploadQuantity(vehicleImage.VehicleId, 5),
@@ -37,7 +39,8 @@ namespace Business.Concrete
             vehicleImage.ImgName = vehicleImage.ImgPath.Substring(0, vehicleImage.ImgPath.LastIndexOf('.'));
             vehicleImage.ImgExtension = Path.GetExtension(file.FileName);
             vehicleImage.ImgSize = file.Length;
-            _vehicleImageDal.Add(vehicleImage);
+
+            await _vehicleImageDal.AddAsync(vehicleImage);
 
             return new SuccessResult();
         }
@@ -48,25 +51,27 @@ namespace Business.Concrete
             if (!result.Success) return result;
 
             FileHelper.Delete(Settings.ImgPath + vehicleImage.ImgPath);
-            _vehicleImageDal.Delete(vehicleImage);
+            _vehicleImageDal.Remove(vehicleImage);
+
             return new SuccessResult();
         }
 
-        public IDataResult<List<VehicleImage>> GetAll()
+        public async Task<IDataResult<IEnumerable<VehicleImage>>> GetAllAsync()
         {
-            return new SuccessDataResult<List<VehicleImage>>(_vehicleImageDal.GetAll());
+            return new SuccessDataResult<IEnumerable<VehicleImage>>
+                (await _vehicleImageDal.GetAllAsync());
         }
 
         public IDataResult<VehicleImage> GetById(int imgId)
         {
             BusinessRules.Run(CheckIfImage(imgId));
             return new SuccessDataResult<VehicleImage>
-                (_vehicleImageDal.Get(c => c.VehicleImageId == imgId));
+                (_vehicleImageDal.GetById<int>(imgId));
         }
 
-        public IDataResult<List<VehicleImage>> GetImagesByCarId(short vehicleId)
+        public IDataResult<IEnumerable<VehicleImage>> GetImagesByCarId(short vehicleId)
         {
-            return new SuccessDataResult<List<VehicleImage>>
+            return new SuccessDataResult<IEnumerable<VehicleImage>>
                 (_vehicleImageDal.GetAll(img => img.VehicleId == vehicleId));
         }
 
@@ -86,14 +91,14 @@ namespace Business.Concrete
         }
         private IResult CheckIfImage(int imgId)
         {
-            var result = _vehicleImageDal.Get(img => img.VehicleImageId == imgId);
+            var result = _vehicleImageDal.GetById<int>(imgId);
             if(result != null)
             {
                 return new SuccessResult();
             }
-            return new ErrorResult(Message.NotImage);
+            return new ErrorResult(Messages.NotImage);
         }
-        private IResult CheckIfVehicle(short vehicleId)
+        private IResult CheckIfVehicle(short vehicleId) 
         {
             return (Result)_vehicleService.GetById(vehicleId);
         }
@@ -104,26 +109,26 @@ namespace Business.Concrete
                 return new SuccessResult();
             }
 
-            return new ErrorResult(Message.ContentTypeOfImageNotSupport);
+            return new ErrorResult(Messages.ContentTypeOfImageNotSupport);
         }
         private IResult CheckIfExceedsUploadQuantity(short vehicleId, int limit)
         {
-            var result = _vehicleImageDal.GetAll(img => img.VehicleId == vehicleId).Count;
+            var result = _vehicleImageDal.GetAll(img => img.VehicleId == vehicleId).ToList().Count;
             if (result < limit)
             {
                 return new SuccessResult();
             }
 
-            return new ErrorResult(Message.VehicleImagesExceededTheUploadLimit);
+            return new ErrorResult(Messages.VehicleImagesExceededTheUploadLimit);
         }
         private IResult CheckIfImageOfTheVehicle(short vehicleId)
         {
-            var result = _vehicleImageDal.GetAll(img => img.VehicleId == vehicleId).Count;
+            var result = _vehicleImageDal.GetAll(img => img.VehicleId == vehicleId).ToList().Count;
             if (result > 0)
             {
                 return null;
             }
-            return new ErrorResult(Message.ThereIsNotImageOfTheVehicle);
+            return new ErrorResult(Messages.ThereIsNotImageOfTheVehicle);
         }
     }
 }
