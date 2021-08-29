@@ -20,10 +20,22 @@ namespace WebAPI.Controllers
             _vehicleService = vehicleService;
         }
 
-        [HttpGet("getbyid")]
-        public IActionResult GetById(short id)
+        [HttpGet("getall")]
+        public async Task<IActionResult> GetAll()
         {
-            var result = _vehicleService.GetById(id);
+            var result = await _vehicleService.GetAllAsync();
+            if(result.Success)
+            {
+                return Ok(result.Data);
+            }
+
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getbyid/{id}")]
+        public async Task<IActionResult> GetById(short id)
+        {
+            var result = await _vehicleService.GetByIdAsync(id);
             if (result.Success)
             {
                 return Ok(result.Data);

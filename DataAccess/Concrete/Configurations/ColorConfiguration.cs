@@ -9,7 +9,7 @@ namespace DataAccess.Concrete.Configurations
     {
         public void Configure(EntityTypeBuilder<Color> builder)
         {
-            throw new NotImplementedException();
+            builder.HasKey(c => c.ColorId);
         }
     }
 }

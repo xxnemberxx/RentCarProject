@@ -9,7 +9,7 @@ namespace DataAccess.Concrete.Configurations
     {
         public void Configure(EntityTypeBuilder<Brand> builder)
         {
-            throw new NotImplementedException();
+            builder.HasKey(b => b.BrandId);
         }
     }
 }
