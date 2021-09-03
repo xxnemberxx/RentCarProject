@@ -68,13 +68,6 @@ namespace WebAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSwagger();
-            
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "RentCar API");
-            });
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -86,6 +79,13 @@ namespace WebAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "RentCar API");
             });
         }
     }

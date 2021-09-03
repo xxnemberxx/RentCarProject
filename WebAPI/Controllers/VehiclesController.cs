@@ -1,11 +1,6 @@
 ﻿using Business.Abstract;
-using Core.Utilities;
 using Entities.Concrete;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
@@ -39,6 +34,17 @@ namespace WebAPI.Controllers
             if (result.Success)
             {
                 return Ok(result.Data);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpPost("add")]
+        public async Task<IActionResult> Add(Vehicle vehicle)
+        {
+            var result = await _vehicleService.AddAsync(vehicle);
+            if (result.Success)
+            {
+                return Ok(result);
             }
             return BadRequest(result.Message);
         }

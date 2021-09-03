@@ -12,9 +12,9 @@ namespace Business.Abstract
     {
         Task<IResult> AddAsync(IFormFile file, VehicleImage vehicleImg);
         IResult Update(IFormFile file, VehicleImage vehicleImg);
-        IResult Delete(VehicleImage vehicleImg);
+        IResult Remove(VehicleImage vehicleImg);
         Task<IDataResult<IEnumerable<VehicleImage>>> GetAllAsync();
-        IDataResult<VehicleImage> GetById(int imgId);
+        IDataResult<VehicleImage> GetById(int imgId);       
         IDataResult<IEnumerable<VehicleImage>> GetImagesByCarId(short vehicleId);
     }
 }

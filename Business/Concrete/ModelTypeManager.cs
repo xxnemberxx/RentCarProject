@@ -1,5 +1,9 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Business.Constants;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Transaction;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -16,44 +20,132 @@ namespace Business.Concrete
             _modelTypeDal = modelTypeDal;
         }
 
-        public Task<IResult> AddAsync(ModelType modelType)
+        [SecuredOperation("modeltype.add,admin")]
+        //[TransactionScopeAspect]
+        [CacheRemoveAspect("IModelTypeService.Get")]
+        public async Task<IResult> AddAsync(ModelType modelType)
         {
-            throw new System.NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            await _modelTypeDal.AddAsync(modelType);
+            await _modelTypeDal.SaveChangesAsync();
+
+            return new SuccessResult();
         }
 
-        public Task<IResult> AddRangeAsync(IEnumerable<ModelType> modelTypes)
+        [SecuredOperation("modeltype.add,admin")]
+        //[TransactionScopeAspect]
+        [CacheRemoveAspect("IModelTypeService.Get")]
+        public async Task<IResult> AddRangeAsync(IEnumerable<ModelType> modelTypes)
         {
-            throw new System.NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            await _modelTypeDal.AddRangeAsync(modelTypes);
+            await _modelTypeDal.SaveChangesAsync();
+
+            return new SuccessResult();
         }
 
-        public Task<IDataResult<IEnumerable<ModelType>>> GetAllAsync()
+        [CacheAspect]
+        public async Task<IDataResult<IEnumerable<ModelType>>> GetAllAsync()
         {
-            throw new System.NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return new ErrorDataResult<IEnumerable<ModelType>>(result.Message);
+            }
+
+            return new SuccessDataResult<IEnumerable<ModelType>>
+                (await _modelTypeDal.GetAllAsync());
         }
 
-        public ValueTask<IDataResult<ModelType>> GetByIdAsync(byte typeId)
+        [CacheAspect]
+        public async ValueTask<IDataResult<ModelType>> GetByIdAsync(byte typeId)
         {
-            throw new System.NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return new ErrorDataResult<ModelType>(result.Message);
+            }
+
+            return new SuccessDataResult<ModelType>
+                (await _modelTypeDal.GetByIdAsync<byte>(typeId));
         }
 
+        [SecuredOperation("modeltype.remove,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IModelTypeService.Get")]
         public IResult Remove(ModelType modelType)
         {
-            throw new System.NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            _modelTypeDal.Remove(modelType);
+            _modelTypeDal.SaveChanges();
+
+            return new SuccessResult();
         }
 
+        [SecuredOperation("modeltype.remove,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IModelTypeService.Get")]
         public IResult RemoveRange(IEnumerable<ModelType> modelTypes)
         {
-            throw new System.NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            _modelTypeDal.RemoveRange(modelTypes);
+            _modelTypeDal.SaveChanges();
+
+            return new SuccessResult();
         }
 
+        [SecuredOperation("modeltype.update,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IModelTypeService.Get")]
         public IResult Update(ModelType modelType)
         {
-            throw new System.NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            _modelTypeDal.Update(modelType);
+            _modelTypeDal.SaveChanges();
+
+            return new SuccessResult();
         }
 
+        [SecuredOperation("modeltype.update,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IModelTypeService.Get")]
         public IResult UpdateRange(IEnumerable<ModelType> modelTypes)
         {
-            throw new System.NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            _modelTypeDal.RemoveRange(modelTypes);
+            _modelTypeDal.SaveChanges();
+
+            return new SuccessResult();
         }
     }
 }

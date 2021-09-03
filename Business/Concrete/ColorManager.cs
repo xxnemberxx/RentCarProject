@@ -1,11 +1,12 @@
 ﻿using Business.Abstract;
-using Business.Constants;
+using Business.BusinessAspect.Autofac;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Transaction;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Business.Concrete
@@ -18,44 +19,128 @@ namespace Business.Concrete
             _colorDal = colorDal;
         }
 
-        public Task<IResult> AddAsync(Color color)
+        [SecuredOperation("color.add,admin")]
+        //[TransactionScopeAspect]
+        [CacheRemoveAspect("IColorService.Get")]
+        public async Task<IResult> AddAsync(Color color)
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            await _colorDal.AddAsync(color);
+            await _colorDal.SaveChangesAsync();
+
+            return new SuccessResult();
         }
 
-        public Task<IResult> AddRangeAsync(IEnumerable<Color> colors)
+        [SecuredOperation("color.add,admin")]
+        //[TransactionScopeAspect]
+        [CacheRemoveAspect("IColorService.Get")]
+        public async Task<IResult> AddRangeAsync(IEnumerable<Color> colors)
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            await _colorDal.AddRangeAsync(colors);
+            await _colorDal.SaveChangesAsync();
+
+            return new SuccessResult();
         }
 
-        public Task<IDataResult<IEnumerable<Color>>> GetAllAsync()
+        [CacheAspect]
+        public async Task<IDataResult<IEnumerable<Color>>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return new ErrorDataResult<IEnumerable<Color>>(result.Message);
+            }
+
+            return new SuccessDataResult<IEnumerable<Color>>(await _colorDal.GetAllAsync());        
         }
 
-        public ValueTask<IDataResult<Color>> GetByIdAsync(byte colorId)
+        [CacheAspect]
+        public async ValueTask<IDataResult<Color>> GetByIdAsync(byte colorId)
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return new ErrorDataResult<Color>(result.Message);
+            }
+
+            return new SuccessDataResult<Color>
+                (await _colorDal.GetByIdAsync<byte>(colorId));
         }
 
+        [SecuredOperation("color.remove,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IColorService.Get")]
         public IResult Remove(Color color)
         {
-            throw new NotImplementedException();
-        }
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
 
+            _colorDal.Remove(color);
+            _colorDal.SaveChanges();
+
+            return new SuccessResult();
+        }
+        [SecuredOperation("color.remove,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IColorService.Get")]
         public IResult RemoveRange(IEnumerable<Color> colors)
         {
-            throw new NotImplementedException();
-        }
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
 
+            _colorDal.RemoveRange(colors);
+            _colorDal.SaveChanges();
+
+            return new SuccessResult();
+        }
+        [SecuredOperation("color.update,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IColorService.Get")]
         public IResult Update(Color color)
         {
-            throw new NotImplementedException();
-        }
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
 
+            _colorDal.Update(color);
+            _colorDal.SaveChanges();
+
+            return new SuccessResult();
+        }
+        [SecuredOperation("color.update,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IColorService.Get")]
         public IResult UpdateRange(IEnumerable<Color> colors)
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            _colorDal.UpdateRange(colors);
+            _colorDal.SaveChanges();
+
+            return new SuccessResult();
         }
     }
 }

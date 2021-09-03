@@ -1,11 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.DTOs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
@@ -21,9 +16,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult Login(UserForLoginDto userForLoginDto)
+        public ActionResult Login(UserForLoginDto userForLoginDto) 
         {
-            var userToLogin = _authService.Login(userForLoginDto);
+            var userToLogin = _authService.Login(userForLoginDto).Result;
             if (!userToLogin.Success)
             {
                 return BadRequest(userToLogin.Message);
@@ -41,13 +36,13 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public ActionResult Register(UserForRegisterDto userForRegisterDto)
         {
-            var userExists = _authService.UserExists(userForRegisterDto.Email);
+            var userExists = _authService.UserExists(userForRegisterDto.Email).Result;
             if (!userExists.Success)
             {
                 return BadRequest(userExists.Message);
             }
 
-            var registerResult = _authService.Register(userForRegisterDto, userForRegisterDto.Password);
+            var registerResult = _authService.Register(userForRegisterDto, userForRegisterDto.Password).Result;
             var result = _authService.CreateAccessToken(registerResult.Data);
             if (result.Success)
             {

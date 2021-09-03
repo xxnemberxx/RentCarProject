@@ -1,8 +1,10 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -20,14 +22,24 @@ namespace Business.Concrete
             return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user));
         }
 
-        public void Add(User user)
+        public async Task<IResult> AddAsync(User user)
         {
-            _userDal.Add(user);
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            await _userDal.AddAsync(user);
+            await _userDal.SaveChangesAsync();
+
+            return new SuccessResult();
         }
 
-        public IDataResult<User> GetByMail(string email)
+        public async Task<IDataResult<User>> GetByMailAsync(string email)
         {
-            return new SuccessDataResult<User>((User)_userDal.Find(u => u.Email == email));
+            return new SuccessDataResult<User>
+                (await _userDal.SingleOrDefaultAsync(u => u.Email == email));
         }
     }
 }

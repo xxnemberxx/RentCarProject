@@ -7,7 +7,6 @@ namespace DataAccess.Concrete.EntityFramework
 {
     public class ProjectDbContext : DbContext
     {
-        public DbSet<Customer> Customers { get; set; }
         public DbSet<VehicleImage> VehicleImages { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<ModelType> ModelTypes { get; set; }
@@ -15,6 +14,7 @@ namespace DataAccess.Concrete.EntityFramework
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Model> Models { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<OperationClaim> OperationClaims { get; set; }
         public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -23,18 +23,16 @@ namespace DataAccess.Concrete.EntityFramework
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder
-                .ApplyConfiguration(new VehicleConfiguration())
-                .ApplyConfiguration(new VehicleImageConfiguration())
-                .ApplyConfiguration(new BrandConfiguration())
-                .ApplyConfiguration(new ColorConfiguration())
-                .ApplyConfiguration(new CustomerConfiguration())
-                .ApplyConfiguration(new ModelConfiguration())
-                .ApplyConfiguration(new ReservationConfiguration())
-                .ApplyConfiguration(new ModelTypeConfiguration())
-                .ApplyConfiguration(new UserConfiguration())
-                .ApplyConfiguration(new OperationClaimConfiguration())
-                .ApplyConfiguration(new UserClaimConfiguration());
+            builder.ApplyConfiguration(new VehicleConfiguration());
+            builder.ApplyConfiguration(new VehicleImageConfiguration());
+            builder.ApplyConfiguration(new BrandConfiguration());
+            builder.ApplyConfiguration(new ColorConfiguration());
+            builder.ApplyConfiguration(new ModelConfiguration());
+            builder.ApplyConfiguration(new ReservationConfiguration());
+            builder.ApplyConfiguration(new ModelTypeConfiguration());
+            builder.ApplyConfiguration(new UserConfiguration());
+            builder.ApplyConfiguration(new OperationClaimConfiguration());
+            builder.ApplyConfiguration(new UserClaimConfiguration());
         }
     }
 }

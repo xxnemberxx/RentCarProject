@@ -1,11 +1,10 @@
 ﻿using Core.DataAccess.EntityFramework;
 using Core.Entities.Concrete;
 using DataAccess.Abstract;
-using DataAccess.Concrete.EntityFramework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DataAccess.Concrete.EntıtyFramework
+namespace DataAccess.Concrete.EntityFramework
 {
     public class EfUserDal : EfRepositoryBase<User, ProjectDbContext>, IUserDal
     {

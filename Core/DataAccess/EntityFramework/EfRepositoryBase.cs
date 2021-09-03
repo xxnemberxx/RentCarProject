@@ -41,8 +41,8 @@ namespace Core.DataAccess.EntityFramework
         public IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate = null)
         {
             return (predicate == null)
-                ? Context.Set<TEntity>().ToList()
-                : Context.Set<TEntity>().Where(predicate).ToList();
+                ? Context.Set<TEntity>().AsNoTracking()
+                : Context.Set<TEntity>().Where(predicate).AsNoTracking();
         }  
            
         public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null)

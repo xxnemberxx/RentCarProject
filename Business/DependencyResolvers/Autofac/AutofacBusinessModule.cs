@@ -1,6 +1,10 @@
 ﻿using Autofac;
+using Autofac.Extras.DynamicProxy;
 using Business.Abstract;
 using Business.Concrete;
+using Castle.DynamicProxy;
+using Core.Utilities.Interceptors;
+using Core.Utilities.Security.Jwt;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.UnitOfWork;
@@ -18,8 +22,10 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<ReservationManager>().As<IReservationService>().SingleInstance();
             builder.RegisterType<ModelManager>().As<IModelService>().SingleInstance();
             builder.RegisterType<ModelTypeManager>().As<IModelTypeService>().SingleInstance();
-            builder.RegisterType<CustomerManager>().As<ICustomerService>().SingleInstance();
             builder.RegisterType<BrandManager>().As<IBrandService>().SingleInstance();
+            builder.RegisterType<UserManager>().As<IUserService>();
+
+            builder.RegisterType<ProjectDbContext>().As<ProjectDbContext>().SingleInstance();
 
             builder.RegisterType<EfVehicleDal>().As<IVehicleDal>().SingleInstance();
             builder.RegisterType<EfVehicleImageDal>().As<IVehicleImageDal>().SingleInstance();
@@ -27,10 +33,22 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<EfReservationDal>().As<IReservationDal>().SingleInstance();
             builder.RegisterType<EfModelDal>().As<IModelDal>().SingleInstance();
             builder.RegisterType<EfModelTypeDal>().As<IModelTypeDal>().SingleInstance();
-            builder.RegisterType<EfCustomerDal>().As<ICustomerDal>().SingleInstance();
             builder.RegisterType<EfBrandDal>().As<IBrandDal>().SingleInstance();
+            builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
 
-            builder.RegisterType<ProjectDbContext>().As<ProjectDbContext>().SingleInstance();
+
+
+            builder.RegisterType<AuthManager>().As<IAuthService>();
+            builder.RegisterType<JwtHelper>().As<ITokenHelper>();
+
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()
+                .EnableInterfaceInterceptors(new ProxyGenerationOptions()
+                {
+                    Selector = new AspectInterceptorSelector()
+                });
+
         }
     }
 }

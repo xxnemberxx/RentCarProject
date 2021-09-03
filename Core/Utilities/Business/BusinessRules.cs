@@ -2,7 +2,7 @@
 
 namespace Core.Utilities.Business
 {
-    public class BusinessRules
+    public static class BusinessRules
     {
         public static IResult Run(params IResult[] logics)
         {
@@ -14,7 +14,17 @@ namespace Core.Utilities.Business
                 }
             }
 
-            return null;
+            return new SuccessResult();
+        }
+
+        public static bool CheckRules(this IResult result)
+        {
+            if (result != null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

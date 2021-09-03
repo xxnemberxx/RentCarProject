@@ -1,11 +1,12 @@
 ﻿using Business.Abstract;
-using Business.Constants;
+using Business.BusinessAspect.Autofac;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Transaction;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Business.Concrete
@@ -17,44 +18,133 @@ namespace Business.Concrete
         {
             _reservationDal = reservationDal;
         }
-        public Task<IResult> AddAsync(Reservation reservation)
+
+        [SecuredOperation("reservation.add,admin")]
+        //[TransactionScopeAspect]
+        [CacheRemoveAspect("IReservationService.Get")]
+        public async Task<IResult> AddAsync(Reservation reservation)
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if(!result.Success)
+            {
+                return result;
+            }
+
+            await _reservationDal.AddAsync(reservation);
+            await _reservationDal.SaveChangesAsync();
+
+            return new SuccessResult();
         }
 
-        public Task<IResult> AddRangeAsync(IEnumerable<Reservation> reservations)
+        [SecuredOperation("reservation.add,admin")]
+        //[TransactionScopeAspect]
+        [CacheRemoveAspect("IReservationService.Get")]
+        public async Task<IResult> AddRangeAsync(IEnumerable<Reservation> reservations)
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            await _reservationDal.AddRangeAsync(reservations);
+            await _reservationDal.SaveChangesAsync();
+
+            return new SuccessResult();
         }
 
-        public Task<IDataResult<IEnumerable<Reservation>>> GetAllAsync()
+        [CacheAspect]
+        public async Task<IDataResult<IEnumerable<Reservation>>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return new ErrorDataResult<IEnumerable<Reservation>>(result.Message);                 
+            }
+
+            return new SuccessDataResult<IEnumerable<Reservation>>
+                (await _reservationDal.GetAllAsync());
         }
 
-        public ValueTask<IDataResult<Reservation>> GetByIdAsync(int reservationId)
+        [CacheAspect]
+        public async ValueTask<IDataResult<Reservation>> GetByIdAsync(int reservationId)
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return new ErrorDataResult<Reservation>(result.Message);
+            }
+
+            return new SuccessDataResult<Reservation>
+                (await _reservationDal.GetByIdAsync<int>(reservationId));
         }
 
+        [SecuredOperation("reservation.remove,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IReservationService.Get")]
         public IResult Remove(Reservation reservation)
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            _reservationDal.Remove(reservation);
+            _reservationDal.SaveChanges();
+
+            return new SuccessResult();
         }
 
+        [SecuredOperation("reservation.remove,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IReservationService.Get")]
         public IResult RemoveRange(IEnumerable<Reservation> reservations)
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            _reservationDal.RemoveRange(reservations);
+            _reservationDal.SaveChanges();
+
+            return new SuccessResult();
         }
 
+        [SecuredOperation("reservation.update,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IReservationService.Get")]
         public IResult Update(Reservation reservation)
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            _reservationDal.Update(reservation);
+            _reservationDal.SaveChanges();
+
+            return new SuccessResult();
         }
 
+        [SecuredOperation("reservation.update,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IReservationService.Get")]
         public IResult UpdateRange(IEnumerable<Reservation> reservations)
         {
-            throw new NotImplementedException();
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            _reservationDal.UpdateRange(reservations);
+            _reservationDal.SaveChanges();
+
+            return new SuccessResult();
         }
     }
 }

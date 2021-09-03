@@ -1,6 +1,9 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Business;
 using Core.Utilities.Helpers;
@@ -24,7 +27,11 @@ namespace Business.Concrete
             _vehicleImageDal = vehicleImageDal;
             _vehicleService = vehicleService;
         }
+
+        [SecuredOperation("vehicleimg.add")]
         [ValidationAspect(typeof(VehicleImageValidator))]
+        //[TransactionScopeAspect]
+        [CacheRemoveAspect("IVehicleService.Get")]
         public async Task<IResult> AddAsync(IFormFile file, VehicleImage vehicleImage)
         {
             var result = BusinessRules.Run(
@@ -45,7 +52,10 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        public IResult Delete(VehicleImage vehicleImage)
+        [SecuredOperation("vehicleimg.remove")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IVehicleService.Get")]
+        public IResult Remove(VehicleImage vehicleImage)
         {
             var result = BusinessRules.Run(CheckIfImageOfTheVehicle(vehicleImage.VehicleId));
             if (!result.Success) return result;
@@ -56,25 +66,40 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        [CacheAspect]
         public async Task<IDataResult<IEnumerable<VehicleImage>>> GetAllAsync()
         {
             return new SuccessDataResult<IEnumerable<VehicleImage>>
                 (await _vehicleImageDal.GetAllAsync());
         }
 
+        [CacheAspect]
         public IDataResult<VehicleImage> GetById(int imgId)
         {
-            BusinessRules.Run(CheckIfImage(imgId));
+            var result = BusinessRules.Run(CheckIfImage(imgId));
+            if (!result.Success)
+            {
+                return new ErrorDataResult<VehicleImage>(result.Message);
+            }
             return new SuccessDataResult<VehicleImage>
                 (_vehicleImageDal.GetById<int>(imgId));
         }
 
+        [CacheAspect]
         public IDataResult<IEnumerable<VehicleImage>> GetImagesByCarId(short vehicleId)
         {
+            var result = BusinessRules.Run();
+            if (!result.Success)
+            {
+                return new ErrorDataResult<IEnumerable<VehicleImage>>(result.Message);
+            }
             return new SuccessDataResult<IEnumerable<VehicleImage>>
                 (_vehicleImageDal.GetAll(img => img.VehicleId == vehicleId));
         }
 
+        [SecuredOperation("vehicleimg.add,admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IVehicleImageService.Get")]
         public IResult Update(IFormFile file, VehicleImage vehicleImage)
         {
 
@@ -91,7 +116,7 @@ namespace Business.Concrete
         }
         private IResult CheckIfImage(int imgId)
         {
-            var result = _vehicleImageDal.GetById<int>(imgId);
+            var result = _vehicleImageDal.GetById(imgId);
             if(result != null)
             {
                 return new SuccessResult();
@@ -100,7 +125,7 @@ namespace Business.Concrete
         }
         private IResult CheckIfVehicle(short vehicleId) 
         {
-            return (Result)_vehicleService.GetById(vehicleId);
+            return (Result) _vehicleService.GetById(vehicleId);
         }
         private IResult CheckIfImageTypeInvalid(string imgType)
         {

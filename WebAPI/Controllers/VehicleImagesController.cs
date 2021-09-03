@@ -1,12 +1,7 @@
 ﻿using Business.Abstract;
-using Core.Utilities.Helpers;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
@@ -32,11 +27,11 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("delete")]
-        public IActionResult Delete([FromForm(Name = ("CarImageId"))] int id)
+        [HttpPost("remove")]
+        public IActionResult Remove([FromForm(Name = ("CarImageId"))] int id)
         {
             var carImage = _vehicleImageService.GetById(id).Data;
-            var result = _vehicleImageService.Delete(carImage);
+            var result = _vehicleImageService.Remove(carImage);
             if (result.Success && carImage != null)
             {
                 return Ok(result);
